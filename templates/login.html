@@ -1,103 +1,411 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Login - Inventra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      height: 100vh;
-      display: flex;
-      font-family: 'Segoe UI', sans-serif;
-      align-items: center;
-      justify-content: center;
+    body, html {
+      height: 100%;
       margin: 0;
-    }
-    .login-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(8px);
-      border-radius: 15px;
-      padding: 30px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-    .login-logo {
-      display: block;
-      margin: 0 auto 20px;
-      height: 50px;
-    }
-    .form-control {
-      border-radius: 8px;
-    }
-    .btn-primary {
-      border-radius: 8px;
-      background-color: #1e3c72;
-      border: none;
-    }
-    .btn-primary:hover {
-      background-color: #16305b;
-    }
-    .text-brand {
-      color: #1e3c72;
-      font-weight: bold;
-    }
-    .sidebar {
-      background-color: #2a5298;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .content-left {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .content-right {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+      overflow: hidden;
     }
 
-    /* Mobile-responsive Design */
+    .login-container {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background Partikel Animasi */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Panel Kiri */
+    .left-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: start;
+      padding: 5rem;
+      z-index: 2;
+      perspective: 1000px;
+    }
+
+    .left-panel h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      background: linear-gradient(45deg, #ffffff, #a9b0bd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      animation: neonGlow 2s infinite alternate, fadeInLeft 1.5s ease-out;
+    }
+
+    .left-panel p {
+      font-size: 1.3rem;
+      max-width: 550px;
+      line-height: 1.8;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeInLeft 2s ease-out;
+    }
+
+    .left-panel p span {
+      color: #a9b0bd;
+      font-style: italic;
+    }
+
+    /* Panel Kanan */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #a9b0bd, #9cb3d9);
+      border-top-left-radius: 80px;
+      border-bottom-left-radius: 80px;
+      padding: 3rem;
+      z-index: 2;
+      transform: rotateY(10deg);
+      animation: flyInRight 1.5s ease-out forwards;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 25px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transform: translateZ(50px);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      animation: float 4s infinite ease-in-out;
+    }
+
+    .login-box:hover {
+      transform: translateZ(70px) rotateY(5deg);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .login-box h3 {
+      color: #ffffff;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      animation: glow 2s infinite alternate;
+    }
+
+    /* Styling Alert */
+    .alert-custom {
+      background: linear-gradient(45deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px 12px 50px; /* Kurangi padding-right karena tombol close dihapus */
+      font-size: 1rem;
+      text-align: center;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+      animation: slideInDown 0.8s ease-in-out, glowAlert 2s infinite alternate;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation-fill-mode: forwards;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Styling Icon Peringatan */
+    .alert-custom .alert-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Form Input */
+    .form-control {
+      border-radius: 15px;
+      padding: 12px 14px 12px 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+      transition: all 0.4s ease;
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(30, 60, 114, 0.5);
+      transform: scale(1.02);
+    }
+
+    .input-icon {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-icon i.fa-user,
+    .input-icon i.fa-lock {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .form-control:focus + i.fa-user,
+    .form-control:focus + i.fa-lock {
+      color: #ffffff;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-password:hover {
+      color: #ffffff;
+    }
+
+    /* Tombol Login */
+    .btn-primary {
+      border-radius: 15px;
+      background: linear-gradient(45deg, #1e3c72, #2a5298);
+      border: none;
+      padding: 14px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-5px) translateZ(20px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    /* Responsiveness */
     @media (max-width: 768px) {
-      .content-left, .content-right {
-        width: 100%;
-        margin-bottom: 20px;
+      .login-container {
+        flex-direction: column;
       }
-      .login-card {
-        width: 90%;
-        padding: 20px;
+
+      .right-panel {
+        border-radius: 0;
+        transform: rotateY(0deg);
       }
+
+      .left-panel, .right-panel {
+        padding: 2rem;
+        text-align: center;
+        align-items: center;
+      }
+
+      .left-panel {
+        align-items: center;
+      }
+
+      .left-panel h1 {
+        font-size: 2.5rem;
+      }
+
+      .left-panel p {
+        font-size: 1rem;
+      }
+
+      .login-box {
+        transform: translateZ(20px);
+      }
+    }
+
+    /* Animasi */
+    @keyframes neonGlow {
+      0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3); }
+      100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.5); }
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+      100% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
+    }
+
+    @keyframes glowAlert {
+      0% { box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3); }
+      100% { box-shadow: 0 5px 20px rgba(231, 76, 60, 0.5); }
+    }
+
+    @keyframes slideInDown {
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-100px) rotateY(-20deg); }
+      to { opacity: 1; transform: translateX(0) rotateY(0deg); }
+    }
+
+    @keyframes flyInRight {
+      from { opacity: 0; transform: translateX(100px) rotateY(20deg); }
+      to { opacity: 1; transform: translateX(0) rotateY(10deg); }
+    }
+
+    @keyframes float {
+      0% { transform: translateZ(50px) translateY(0); }
+      50% { transform: translateZ(50px) translateY(-10px); }
+      100% { transform: translateZ(50px) translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+      50% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
+      100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
     }
   </style>
 </head>
 <body>
+  <!-- Background Partikel Animasi -->
+  <div id="particles-js"></div>
 
-<div class="container-fluid d-flex flex-wrap">
-  <!-- Left Content (Login Form) -->
-  <div class="content-right col-md-6">
-    <div class="login-card">
-      <h3 class="text-center mb-4 text-brand">Login ke Inventra</h3>
-      <form method="POST">
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input name="username" class="form-control" id="username" required>
+  <div class="login-container">
+    <!-- KIRI -->
+    <div class="left-panel">
+      <h1 class="animate__animated animate__fadeInDown">Selamat Datang di INVENTRA</h1>
+      <p class="animate__animated animate__fadeInUp">
+        Segera login dan kelola data Anda dengan kontrol penuh. <span>Anda mengendalikan bisnis, kami memberikan dukungan sistem yang luar biasa.</span>
+      </p>
+    </div>
+
+    <!-- KANAN -->
+    <div class="right-panel">
+      <div class="login-box">
+        <h3 class="animate__animated animate__zoomIn">Login ke Sistem</h3>
+        <!-- Alert untuk Pesan Kesalahan -->
+        {% if error %}
+        <div class="alert alert-custom fade show" role="alert">
+          <i class="fas fa-exclamation-triangle alert-icon"></i>
+          {{ error }}
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input name="password" type="password" class="form-control" id="password" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Masuk</button>
-      </form>
+        {% endif %}
+
+        <form method="POST">
+          <div class="mb-3 input-icon">
+            <i class="fa fa-user animate__animated animate__fadeIn"></i>
+            <input name="username" type="text" id="username" class="form-control" placeholder="Masukkan Username" required>
+          </div>
+          <div class="mb-3 input-icon">
+            <i class="fa fa-lock animate__animated animate__fadeIn"></i>
+            <input name="password" type="password" id="password" class="form-control" placeholder="Masukkan Password" required>
+            <i class="fa fa-eye toggle-password" id="togglePassword"></i>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 animate__animated animate__pulse animate__infinite">Masuk</button>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- Right Content (Logo) -->
-  <div class="content-left col-md-6">
-    <img src="logo-inventra.png" alt="Inventra Logo" class="login-logo">
-  </div>
-</div>
+  <!-- Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Inisialisasi Particles.js
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: '#ffffff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+        modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+      },
+      retina_detect: true
+    });
 
+    // Toggle Password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+      const type = passwordField.type === 'password' ? 'text' : 'password';
+      passwordField.type = type;
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    // Auto-dismiss alert setelah 5 detik
+    const alert = document.querySelector('.alert-custom');
+    if (alert) {
+      setTimeout(() => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 5000);
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Admin - Inventra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      transition: margin-left 0.3s ease;
+      margin: 0;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(90deg, #1a3a6b, #0f2a55);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1100;
+    }
+
+    .welcome-message {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .menu-toggle {
+      width: 30px;
+      height: 22px;
+      position: relative;
+      cursor: pointer;
+      z-index: 1200;
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      height: 4px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 4px;
+      transition: 0.4s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 0; }
+    .menu-toggle span:nth-child(2) { top: 9px; }
+    .menu-toggle span:nth-child(3) { top: 18px; }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg);
+      top: 9px;
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg);
+      top: 9px;
+    }
+
+    .profile {
+      font-size: 1.2rem;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .profile:hover {
+      color: #e2e8f0;
+    }
+
+    .main {
+      margin-left: 0;
+      padding: 1rem;
+      transition: margin-left 0.3s ease;
+      padding-top: 120px;
+      box-sizing: border-box;
+    }
+
+    .main.shift {
+      margin-left: 250px;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: fallIn 0.9s ease-out;
+      overflow-x: auto;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 15px;
+    }
+
+    h3 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+
+    .btn-action {
+      border: none;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      transition: all 0.25s ease;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+
+    .btn-edit {
+      background-color: #2d4669;
+      color: #ffffff;
+    }
+
+    .btn-edit:hover {
+      background-color: #3b5a8a;
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      color: #ffffff;
+    }
+
+    .btn-delete:hover {
+      background-color: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .table {
+      background: white;
+      width: 100%;
+      table-layout: auto;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .table thead th {
+      background-color: #2d3748;
+      color: #ffffff;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .table tbody td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .action-column {
+      width: 160px;
+      padding: 0 5px;
+      text-align: center;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #6b7280;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    /* Styling modal konfirmasi delete */
+    .modal-header-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .modal-header-danger .btn-close {
+      filter: invert(1);
+    }
+
+    .delete-icon {
+      font-size: 3rem;
+      color: #dc3545;
+      margin: 20px 0;
+    }
+
+    .confirm-delete-text {
+      font-size: 1.1rem;
+      color: #495057;
+      margin-bottom: 15px;
+    }
+
+    .admin-info {
+      background-color: #f8f9fa;
+      border-left: 4px solid #dc3545;
+      padding: 10px 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fallIn {
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      50% {
+        transform: translateY(20px);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .table-container {
+        padding: 10px;
+        overflow-x: auto;
+      }
+
+      .table thead th,
+      .table tbody td {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+
+      .btn-action {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+        width: 28px;
+        height: 28px;
+      }
+
+      .action-column {
+        width: 70px;
+        padding: 0 3px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .welcome-message {
+        font-size: 1.5rem;
+        padding: 8px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  {% include 'topbar.html' %}
+  {% include 'sidebar.html' %}
+
+  <!-- Modal Delete Confirmation -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header modal-header-danger">
+          <h5 class="modal-title" id="deleteModalLabel">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Konfirmasi Hapus Admin
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="delete-icon">
+            <i class="fas fa-trash-alt"></i>
+          </div>
+          <div class="confirm-delete-text">
+            Apakah Anda yakin ingin menghapus admin ini?
+          </div>
+          <div class="admin-info" id="adminInfo">
+            <strong>ID:</strong> <span id="deleteAdminId"></span><br>
+            <strong>Username:</strong> <span id="deleteAdminUsername"></span>
+          </div>
+          <div class="text-muted">
+            <small><i class="fas fa-info-circle me-1"></i>Tindakan ini tidak dapat dibatalkan!</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>Batal
+          </button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <i class="fas fa-trash me-1"></i>Ya, Hapus Admin
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">
+            <i class="fas fa-edit me-2"></i>Edit Admin
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editForm">
+            <input type="hidden" id="editId" name="id_admin">
+            <div class="mb-3">
+              <label for="editUsername" class="form-label">
+                <i class="fas fa-user me-1"></i>Username
+              </label>
+              <input type="text" class="form-control" id="editUsername" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="editPassword" class="form-label">
+                <i class="fas fa-lock me-1"></i>Password
+              </label>
+              <input type="text" class="form-control" id="editPassword" name="password" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>Batal
+          </button>
+          <button type="submit" class="btn btn-primary" form="editForm">
+            <i class="fas fa-save me-1"></i>Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="container-fluid">
+      <div class="table-container">
+        <h3>Data Admin</h3>
+        {% if admins and admins|length > 0 %}
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Status</th>
+                <th class="action-column">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for admin in admins %}
+                <tr id="admin-row-{{ admin.id_admin }}">
+                  <td class="text-center">{{ loop.index }}</td>
+                  <td>{{ admin.id_admin }}</td>
+                  <td>{{ admin.username }}</td>
+                  <td>{{ admin.password }}</td>
+                  <td>{{ admin.status }}</td>
+                  <td class="text-center action-column">
+                    <button class="btn btn-sm btn-action btn-edit" 
+                            data-admin-id="{{ admin.id_admin }}" 
+                            data-username="{{ admin.username }}" 
+                            data-password="{{ admin.password }}"
+                            title="Edit Admin">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-action btn-delete" 
+                            data-admin-id="{{ admin.id_admin }}"
+                            data-username="{{ admin.username }}"
+                            title="Hapus Admin">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="no-data">Belum ada data admin.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Variable global untuk menyimpan ID admin yang akan dihapus
+    let adminToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Menu toggle functionality
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const main = document.getElementById('main');
+
+      if (menuToggle && sidebar && main) {
+        menuToggle.addEventListener('click', function () {
+          sidebar.classList.toggle('active');
+          main.classList.toggle('shift');
+          menuToggle.classList.toggle('active');
+        });
+      }
+
+      // Event listener untuk tombol edit
+      document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+          const adminId = this.getAttribute('data-admin-id');
+          const username = this.getAttribute('data-username');
+          const password = this.getAttribute('data-password');
+          
+          console.log(`Opening edit modal for admin ID: ${adminId}, Username: ${username}, Password: ${password}`);
+          
+          document.getElementById('editId').value = adminId;
+          document.getElementById('editUsername').value = username;
+          document.getElementById('editPassword').value = password;
+          
+          const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+          editModal.show();
+        });
+      });
+
+      // Event listener untuk tombol delete - Tampilkan konfirmasi
+      document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function() {
+          const adminId = this.getAttribute('data-admin-id');
+          const username = this.getAttribute('data-username');
+          
+          console.log(`Showing delete confirmation for admin ID: ${adminId}`);
+          
+          // Simpan data admin yang akan dihapus
+          adminToDelete = {
+            id: adminId,
+            username: username
+          };
+          
+          // Isi informasi admin di modal
+          document.getElementById('deleteAdminId').textContent = adminId;
+          document.getElementById('deleteAdminUsername').textContent = username;
+          
+          // Tampilkan modal konfirmasi
+          const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+          deleteModal.show();
+        });
+      });
+
+      // Event listener untuk konfirmasi hapus
+      document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (!adminToDelete) {
+          console.error('No admin selected for deletion');
+          return;
+        }
+
+        const adminId = adminToDelete.id;
+        console.log(`Confirmed deletion of admin ID: ${adminId}`);
+        
+        // Disable tombol untuk mencegah double click
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menghapus...';
+        
+        // Kirim request DELETE
+        fetch(`/delete_admin/${adminId}`, {
+          method: 'GET', // Gunakan GET sesuai route yang ada
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => {
+          console.log(`Delete response status: ${response.status}`);
+          
+          if (response.ok) {
+            console.log('Admin deleted successfully');
+            
+            // Tutup modal
+            const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            deleteModal.hide();
+            
+            // Tampilkan notifikasi sukses
+            showNotification('Admin berhasil dihapus!', 'success');
+            
+            // Reload halaman setelah delay singkat
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } else {
+            // Jika gagal dengan GET, coba dengan POST
+            return fetch(`/delete_admin/${adminId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+              },
+              body: JSON.stringify({ '_method': 'DELETE' })
+            });
+          }
+        })
+        .then(response => {
+          if (response && response.ok) {
+            console.log('Admin deleted successfully with POST method');
+            
+            // Tutup modal
+            const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            deleteModal.hide();
+            
+            // Tampilkan notifikasi sukses
+            showNotification('Admin berhasil dihapus!', 'success');
+            
+            // Reload halaman setelah delay singkat
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } else if (response) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error during deletion:', error);
+          
+          // Reset tombol
+          this.disabled = false;
+          this.innerHTML = '<i class="fas fa-trash me-1"></i>Ya, Hapus Admin';
+          
+          // Tampilkan error
+          showNotification('Gagal menghapus admin: ' + error.message, 'error');
+        });
+      });
+
+      // Submit form edit admin
+      document.getElementById('editForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('editId').value;
+        const username = document.getElementById('editUsername').value.trim();
+        const password = document.getElementById('editPassword').value.trim();
+
+        // Validasi input sebelum kirim
+        if (!username || !password) {
+          showNotification('Username dan Password tidak boleh kosong!', 'error');
+          return;
+        }
+
+        console.log(`Submitting edit for admin ID: ${id}, Username: ${username}, Password: ${password}`);
+
+        fetch(`/edit_admin/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ 
+            username: username, 
+            password: password 
+          })
+        })
+        .then(response => {
+          console.log(`Edit response status: ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Edit response data:', data);
+          if (data.status === "success") {
+            console.log('Edit successful');
+            
+            // Tutup modal
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+            editModal.hide();
+            
+            // Tampilkan notifikasi sukses
+            showNotification('Admin berhasil diupdate!', 'success');
+            
+            // Reload halaman setelah delay singkat
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          } else {
+            throw new Error(data.message || 'Gagal mengupdate admin.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during edit:', error.message);
+          showNotification('Gagal mengupdate admin: ' + error.message, 'error');
+        });
+      });
+
+      // Reset modal saat ditutup
+      document.getElementById('deleteModal').addEventListener('hidden.bs.modal', function () {
+        adminToDelete = null;
+        document.getElementById('confirmDeleteBtn').disabled = false;
+        document.getElementById('confirmDeleteBtn').innerHTML = '<i class="fas fa-trash me-1"></i>Ya, Hapus Admin';
+      });
+    });
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+      // Buat element notifikasi
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+      notification.style.cssText = 'top: 100px; right: 20px; z-index: 9999; min-width: 300px;';
+      
+      notification.innerHTML = `
+        <strong>${type === 'success' ? 'Berhasil!' : 'Error!'}</strong> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+      
+      // Tambahkan ke body
+      document.body.appendChild(notification);
+      
+      // Hapus otomatis setelah 3 detik
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,63 +1,403 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Data Barang</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Inventra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      margin: 0;
+      transition: margin-left 0.3s ease;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(90deg, #1e3c72, #2a5298);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1100;
+    }
+
+    .welcome-message {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .menu-toggle {
+      width: 30px;
+      height: 22px;
+      position: relative;
+      cursor: pointer;
+      z-index: 1200;
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      height: 4px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 4px;
+      transition: 0.4s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 0; }
+    .menu-toggle span:nth-child(2) { top: 9px; }
+    .menu-toggle span:nth-child(3) { top: 18px; }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg);
+      top: 9px;
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg);
+      top: 9px;
+    }
+
+    .profile {
+      font-size: 1.2rem;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .profile:hover {
+      color: #e2e8f0;
+    }
+
+    .main {
+      margin-left: 0;
+      padding: 1rem;
+      padding-top: 100px;
+      transition: margin-left 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .main.shift {
+      margin-left: 250px;
+    }
+
+    /* Card Styling */
+    .dashboard-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      margin-top: -100px;
+      animation: fallIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform, box-shadow;
+    }
+
+    .dashboard-card:nth-child(1) { animation-delay: 0.2s; }
+    .dashboard-card:nth-child(2) { animation-delay: 0.7s; }
+    .dashboard-card:nth-child(3) { animation-delay: 1.2s; }
+    .dashboard-card:nth-child(4) { animation-delay: 1.7s; }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .dashboard-card i {
+      font-size: 2rem;
+      color: #ffffff;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      opacity: 0.2;
+    }
+
+    .dashboard-card h5 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-card p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .card-total { background: linear-gradient(135deg, #1e3c72, #2a5298); color: #ffffff; }
+    .card-masuk { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #ffffff; }
+    .card-keluar { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; }
+    .card-supplier { background: linear-gradient(135deg, #f39c12, #e67e22); color: #ffffff; }
+
+    /* Chart Container */
+    .chart-container {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+      opacity: 0;
+      margin-top: -100px;
+      animation: fallIn 0.6s ease-out forwards; /* Durasi 0.6s, easing ease-out */
+      animation-delay: 0.5s;
+    }
+
+    /* Top Stok Table */
+    .top-stok-container {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+      opacity: 0;
+      margin-top: -100px;
+      animation: fallIn 0.6s ease-out forwards; /* Durasi 0.6s, easing ease-out */
+      animation-delay: 0.7s;
+    }
+
+    .top-stok-container h5 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1rem;
+    }
+
+    .top-stok-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .top-stok-container th,
+    .top-stok-container td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .top-stok-container th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .top-stok-container td {
+      color: #1e293b;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fallIn {
+      0% {
+        margin-top: -100px;
+        opacity: 0;
+      }
+      60% {
+        margin-top: 10px;
+        opacity: 0.8;
+      }
+      100% {
+        margin-top: 0;
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main.shift {
+        margin-left: 0;
+      }
+
+      .dashboard-card h5 {
+        font-size: 1rem;
+      }
+
+      .dashboard-card p {
+        font-size: 1.4rem;
+      }
+
+      .welcome-message {
+        font-size: 1.2rem;
+        padding: 8px 15px;
+      }
+
+      .top-stok-container th,
+      .top-stok-container td {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
+  {% include 'topbar.html' %}
+  {% include 'sidebar.html' %}
 
-{% include 'navbar.html' %}
+  <div class="main" id="main">
+    <div class="container-fluid">
+      <!-- Dashboard Cards -->
+      <div class="row g-4 mb-4">
+        <!-- Card Total Barang -->
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card card-total">
+            <i class="fas fa-boxes"></i>
+            <h5>Total Barang</h5>
+            <p>{{ barang|length }}</p>
+          </div>
+        </div>
+        <!-- Card Barang Masuk -->
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card card-masuk">
+            <i class="fas fa-arrow-down"></i>
+            <h5>Barang Masuk</h5>
+            <p>{{ barang|length }}</p>
+          </div>
+        </div>
+        <!-- Card Barang Keluar -->
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card card-keluar">
+            <i class="fas fa-arrow-up"></i>
+            <h5>Barang Keluar</h5>
+            <p>0</p>
+          </div>
+        </div>
+        <!-- Card Total Supplier -->
+        <div class="col-md-6 col-lg-3">
+          <div class="dashboard-card card-supplier">
+            <i class="fas fa-truck"></i>
+            <h5>Total Supplier</h5>
+            <p>{{ barang|map(attribute='nama_supplier')|unique|list|length }}</p>
+          </div>
+        </div>
+      </div>
 
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Data Barang</h2>
-    <a href="{{ url_for('add_item') }}" class="btn btn-success">Tambah Barang</a>
-  </div>
-
-  <table class="table table-bordered table-hover bg-white shadow-sm">
-    <thead class="table-dark">
-      <tr>
-        <th>No</th>
-        <th>Kode</th>
-        <th>Nama</th>
-        <th>Kategori</th>
-        <th>Stok</th>
-        <th>Harga</th>
-        <th>Supplier</th>
-        <th>Tanggal Masuk</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for b in barang %}
-      <tr>
-        <td>{{ b[0] }}</td>
-        <td>{{ b[1] }}</td>
-        <td>{{ b[2] }}</td>
-        <td>{{ b[3] }}</td>
-        <td>{{ b[4] }}</td>
-        <td>{{ b[5] }}</td>
-        <td>{{ b[6] }}</td>
-        <td>{{ b[7] }}</td>
-        <td>
-          <a href="{{ url_for('edit_item', id=b[0]) }}" class="btn btn-sm btn-warning">Edit</a>
-          <a href="{{ url_for('delete_item', id=b[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <div class="card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+      <!-- Chart Section -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="chart-container">
+            <h5 class="mb-3">Stok Barang per Nama</h5>
+            <canvas id="stokChart"></canvas>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="top-stok-container">
+            <h5>Top 5 Stok Barang Terbanyak</h5>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Barang</th>
+                  <th>Jumlah</th>
+                </tr>
+              </thead>
+              <tbody id="topStokTable">
+                <!-- Data akan diisi via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script>
+    // Toggle Sidebar
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const main = document.getElementById('main');
+
+      if (menuToggle && sidebar && main) {
+        menuToggle.addEventListener('click', function () {
+          sidebar.classList.toggle('active');
+          main.classList.toggle('shift');
+          menuToggle.classList.toggle('active');
+        });
+      } else {
+        console.error('One or more DOM elements not found');
+      }
+
+      // Data barang dari Flask (contoh)
+      const barang = {{ barang|tojson }};
+
+      // Hitung data untuk chart dan top stok
+      const stokData = {};
+      barang.forEach(item => {
+        const nama = item.nama_barang;
+        const jumlah = parseInt(item.jumlah_barang);
+        stokData[nama] = (stokData[nama] || 0) + jumlah;
+      });
+
+      // Data untuk Chart
+      const labels = Object.keys(stokData);
+      const data = Object.values(stokData);
+
+      // Inisialisasi Chart
+      const ctx = document.getElementById('stokChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Jumlah Stok',
+            data: data,
+            backgroundColor: 'rgba(30, 60, 114, 0.7)',
+            borderColor: 'rgba(30, 60, 114, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // Top 5 Stok Barang Terbanyak
+      const topStok = Object.entries(stokData)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const tbody = document.getElementById('topStokTable');
+      topStok.forEach(([nama, jumlah]) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${nama}</td><td>${jumlah}</td>`;
+        tbody.appendChild(row);
+      });
+    });
+  </script>
 </body>
 </html>

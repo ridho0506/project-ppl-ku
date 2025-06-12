@@ -1,51 +1,389 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Tambah Barang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+  <style>
+    body {
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      font-family: 'Segoe UI', sans-serif;
+      color: #1f1f1f;
+    }
 
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h3 class="mb-3">Tambah Barang</h3>
-      <form method="POST">
-        <div class="mb-3">
-          <label for="kode" class="form-label">Kode Barang</label>
-          <input name="kode" class="form-control" id="kode" required>
+    .form-wrapper {
+      max-width: 900px;
+      margin: 5rem auto;
+      background-color: #f8faff;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      border: none;
+      animation: fallIn 0.9s ease-out;
+    }
+
+    h3 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      font-size: 2.3rem;
+      color: #1e3c72;
+    }
+
+    label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 16px;
+      border: 1px solid #ccc;
+      background-color: #ffffff;
+      color: #222;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #4f8cf7;
+      box-shadow: 0 0 0 0.2rem rgba(79,140,247,0.25);
+    }
+
+    ::placeholder {
+      color: #aaa;
+    }
+
+    .btn-primary {
+      background-color: #4f8cf7;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 18px rgba(79,140,247, 0.3);
+    }
+
+    .btn-primary:hover {
+      background-color: #3a76d1;
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .btn-primary:disabled {
+      background-color: #a3c2ff;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      border-radius: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      color: #333;
+      margin-left: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #d0d0d0;
+      transform: scale(1.03);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fallIn {
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      50% {
+        transform: translateY(20px);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e3c72;
+      margin-bottom: 0.5rem;
+    }
+
+    .col-md-6 {
+      position: relative;
+    }
+
+    /* Styling untuk modal sukses minimalis dan selaras */
+    .modal-header-success {
+      background-color: #2a5298; /* Biru tua dari tema Inventra */
+      color: white;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 0.5rem 1rem;
+    }
+
+    .modal-header-success .btn-close {
+      filter: invert(1);
+    }
+
+    .modal-body-success {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .success-icon {
+      font-size: 2rem;
+      color: #2a5298;
+      margin-bottom: 0.5rem;
+      animation: elegantCheck 0.6s ease-in-out forwards;
+    }
+
+    .spinner-icon {
+      font-size: 2rem;
+      color: #2a5298;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes elegantCheck {
+      0% {
+        transform: scale(0) rotate(-20deg);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.1) rotate(10deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .success-text {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .modal-footer-success {
+      border-top: none;
+      padding: 0.5rem 1rem;
+      justify-content: center;
+    }
+
+    .btn-success-ok {
+      background-color: #2a5298;
+      border: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      display: none; /* Awalnya disembunyiin */
+    }
+
+    .btn-success-ok:hover {
+      background-color: #1e3c72;
+      transform: translateY(-1px) scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .form-wrapper {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Modal Sukses Minimalis -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header modal-header-success">
+        <h5 class="modal-title" id="successModalLabel">
+          <i class="fas fa-check"></i> Berhasil
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-body-success">
+        <div id="successIcon" class="spinner-icon">
+          <i class="fas fa-spinner"></i>
         </div>
-        <div class="mb-3">
-          <label for="nama" class="form-label">Nama Barang</label>
-          <input name="nama" class="form-control" id="nama" required>
-        </div>
-        <div class="mb-3">
-          <label for="kategori" class="form-label">Kategori</label>
-          <input name="kategori" class="form-control" id="kategori" required>
-        </div>
-        <div class="mb-3">
-          <label for="stok" class="form-label">Stok</label>
-          <input name="stok" type="number" class="form-control" id="stok" required>
-        </div>
-        <div class="mb-3">
-          <label for="harga" class="form-label">Harga</label>
-          <input name="harga" type="number" class="form-control" id="harga" required>
-        </div>
-        <div class="mb-3">
-          <label for="supplier" class="form-label">Supplier</label>
-          <input name="supplier" class="form-control" id="supplier" required>
-        </div>
-        <div class="mb-3">
-          <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
-          <input name="tanggal_masuk" type="date" class="form-control" id="tanggal_masuk" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Kembali</a>
-      </form>
+        <div class="success-text">Menyimpan data...</div>
+      </div>
+      <div class="modal-footer modal-footer-success">
+        <button type="button" class="btn btn-success-ok" id="successModalOkBtn">
+          <i class="fas fa-check"></i> OK
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
+<div class="form-wrapper">
+  <h3>Tambah Barang Baru</h3>
+  <form id="addItemForm" method="POST">
+    <div class="row g-3">
+      <!-- Bagian Barang (kiri) -->
+      <div class="col-md-6">
+        <div class="section-title">Data Barang</div>
+        <div class="mb-3">
+          <label for="kode_barang" class="form-label">Kode Barang</label>
+          <input name="kode" class="form-control" id="kode_barang" placeholder="Kode unik" required>
+        </div>
+        <div class="mb-3">
+          <label for="nama_barang" class="form-label">Nama Barang</label>
+          <input name="nama" class="form-control" id="nama_barang" placeholder="Nama barang" required>
+        </div>
+        <div class="mb-3">
+          <label for="jumlah_barang" class="form-label">Jumlah Barang</label>
+          <input name="stok" type="number" class="form-control" id="jumlah_barang" placeholder="Jumlah stok" required>
+        </div>
+      </div>
+
+      <!-- Bagian Supplier (kanan) -->
+      <div class="col-md-6">
+        <div class="section-title">Data Supplier</div>
+        <div class="mb-3">
+          <label for="nama_supplier" class="form-label">Nama Supplier</label>
+          <input name="nama_supplier" class="form-control" id="nama_supplier" placeholder="Nama supplier" required>
+        </div>
+        <div class="mb-3">
+          <label for="alamat_supplier" class="form-label">Alamat Supplier</label>
+          <input name="alamat_supplier" class="form-control" id="alamat_supplier" placeholder="Alamat supplier" required>
+        </div>
+        <div class="mb-3">
+          <label for="no_telp_supplier" class="form-label">No. Telp Supplier</label>
+          <input name="no_telp_supplier" class="form-control" id="no_telp_supplier" placeholder="Nomor telepon supplier" required>
+        </div>
+      </div>
+
+      <!-- Tanggal Masuk (memanjang penuh) -->
+      <div class="col-12">
+        <label for="tgl_masuk" class="form-label">Tanggal Masuk</label>
+        <input name="tanggal_masuk" type="date" class="form-control" id="tgl_masuk" required>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+      <button type="submit" class="btn btn-primary" id="submitBtn">Simpan</button>
+      <a href="{{ url_for('barang_masuk') }}" class="btn btn-secondary">Kembali</a>
+    </div>
+  </form>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Font Awesome untuk ikon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('addItemForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+  const successIcon = document.getElementById('successIcon');
+  const successText = document.querySelector('.success-text');
+  const okBtn = document.getElementById('successModalOkBtn');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Ambil data dari form
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+
+    // Validasi sederhana di frontend
+    if (!data.kode || !data.nama || !data.stok || !data.nama_supplier || !data.alamat_supplier || !data.no_telp_supplier || !data.tanggal_masuk) {
+      showNotification('Semua field wajib diisi!', 'error');
+      return;
+    }
+
+    if (parseInt(data.stok) <= 0) {
+      showNotification('Jumlah barang harus lebih dari 0!', 'error');
+      return;
+    }
+
+    // Disable tombol submit
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+
+    // Kirim data ke backend
+    fetch('/add_item', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      console.log(`Response status: ${response.status}`);
+      if (response.ok) {
+        // Tampilkan modal dengan spinner
+        successModal.show();
+        successIcon.innerHTML = '<i class="fas fa-spinner"></i>';
+        successText.textContent = 'Menyimpan data...';
+
+        // Setelah 1.5 detik, ganti dengan checklist
+        setTimeout(() => {
+          successIcon.classList.remove('spinner-icon');
+          successIcon.classList.add('success-icon');
+          successIcon.innerHTML = '<i class="fas fa-check"></i>';
+          successText.textContent = 'Data berhasil disimpan!';
+          okBtn.style.display = 'block';
+        }, 1500); // Durasi spinner singkat, cuma 1.5 detik
+      } else {
+        return response.text().then(text => {
+          throw new Error(text || 'Gagal menyimpan data.');
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error during submission:', error.message);
+      showNotification('Gagal menyimpan data: ' + error.message, 'error');
+      // Reset tombol
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Simpan';
+    });
+  });
+
+  // Event listener untuk tombol OK di modal sukses
+  okBtn.addEventListener('click', function () {
+    successModal.hide();
+    window.location.href = "{{ url_for('add_item') }}";
+  });
+
+  // Fungsi untuk menampilkan notifikasi error
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    
+    notification.innerHTML = `
+      <strong>${type === 'success' ? 'Berhasil!' : 'Error!'}</strong> ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 3000);
+  }
+});
+</script>
 
 </body>
 </html>

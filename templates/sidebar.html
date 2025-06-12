@@ -1,0 +1,303 @@
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="/static/img/logoinventra.png" alt="Logo Inventra">
+    <h5>Inventra</h5>
+  </div>
+  <a href="{{ url_for('index') }}" class="menu-item"><i class="fas fa-home"></i> Beranda</a>
+  
+  <!-- Menu Pengguna dengan Dropdown (Hanya muncul untuk admin) -->
+  {% if session['user']['status'] == 'admin' %}
+    <div class="dropdown">
+      <a href="#" class="dropdown-toggle menu-item" id="penggunaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-users"></i> Pengguna
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="penggunaDropdown">
+        <li><a class="dropdown-item menu-item" href="{{ url_for('data_admin') }}">Data Admin</a></li>
+        <li><a class="dropdown-item menu-item" href="{{ url_for('data_user') }}">Data User</a></li>
+        <li><a class="dropdown-item menu-item" href="{{ url_for('add_user') }}">Tambah User</a></li>
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Menu Data Barang dengan Dropdown -->
+  <div class="dropdown">
+    <a href="#" class="dropdown-toggle menu-item" id="dataBarangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-box"></i> Data Barang
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="dataBarangDropdown">
+      <li><a class="dropdown-item menu-item" href="{{ url_for('barang_masuk') }}">Barang Masuk</a></li>
+      <li><a class="dropdown-item menu-item" href="{{ url_for('distribusi') }}">Barang Distribusi</a></li>
+      <li><a class="dropdown-item menu-item" href="{{ url_for('barang_keluar') }}">Barang Keluar</a></li>
+    </ul>
+  </div>
+
+  <a href="{{ url_for('jadwal_pengiriman') }}" class="menu-item"><i class="fas fa-calendar-alt"></i> Jadwal Pengiriman</a>
+  <a href="#" id="logoutLink" class="menu-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<!-- Modal Konfirmasi Logout -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apakah Anda yakin ingin keluar dari akun Anda?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-logout">Keluar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sidebar {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background: linear-gradient(180deg, #1a3a6b, #0f2a55);
+    color: #ffffff;
+    padding-top: 80px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.3s ease;
+    position: relative;
+  }
+
+  .sidebar .menu-item i {
+    margin-right: 10px;
+  }
+
+  .sidebar .menu-item:hover {
+    background-color: #334155;
+    transform: translateX(8px);
+  }
+
+  .sidebar .menu-item.active {
+    background-color: #2d4669 !important; /* Prioritas lebih tinggi biar nggak ketimpa hover */
+    font-weight: bold;
+    border-left: 4px solid #ffffff;
+  }
+
+  .sidebar-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 20px 0;
+    background: inherit;
+  }
+
+  .sidebar-logo img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 10px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-logo img:hover {
+    transform: scale(1.05);
+  }
+
+  .sidebar-logo h5 {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  /* Styling untuk dropdown di sidebar */
+  .dropdown-toggle::after {
+    margin-left: auto;
+    border-top: 0.3em solid #ffffff;
+    border-right: 0.3em solid transparent;
+    border-left: 0.3em solid transparent;
+    content: '';
+    transition: transform 0.3s ease;
+  }
+
+  .dropdown-toggle[aria-expanded="true"]::after {
+    transform: rotate(90deg);
+  }
+
+  .dropdown-menu {
+    background: #2d4669;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1001;
+    padding: 0;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    color: #ffffff;
+    padding: 10px 25px;
+    transition: background 0.2s, transform 0.3s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: #334155;
+    transform: translateX(8px);
+  }
+
+  .dropdown-item.active {
+    background-color: #2d4669 !important; /* Prioritas lebih tinggi */
+    font-weight: bold;
+    border-left: 4px solid #ffffff;
+  }
+
+  /* Styling untuk modal logout */
+  .modal-header {
+    background: linear-gradient(90deg, #1a3a6b, #0f2a55);
+    color: #ffffff;
+    border-bottom: none;
+    padding: 15px 20px;
+  }
+
+  .modal-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    font-size: 1rem;
+    color: #1e293b;
+    padding: 20px;
+  }
+
+  .modal-footer {
+    border-top: none;
+    padding: 15px 20px;
+  }
+
+  .btn-logout {
+    background-color: #2d4669;
+    color: #ffffff;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+  }
+
+  .btn-logout:hover {
+    background-color: #3b5a8a;
+    transform: translateY(-2px);
+  }
+
+  .btn-cancel {
+    background-color: #6b7280;
+    color: #ffffff;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #7f8a9a;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px;
+    }
+    .dropdown-menu {
+      width: 200px;
+    }
+    .main.shift {
+      margin-left: 0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const logoutLink = document.getElementById('logoutLink');
+    const sidebar = document.getElementById('sidebar');
+
+    // Highlight active menu
+    if (sidebar) {
+      // Hapus semua class active terlebih dahulu
+      const allMenuItems = sidebar.querySelectorAll('.menu-item, .dropdown-toggle, .dropdown-item');
+      allMenuItems.forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Cari menu yang sesuai dengan URL saat ini
+      const currentPath = window.location.pathname;
+      let activeFound = false;
+
+      // Cek menu utama (tanpa dropdown)
+      const menuItems = sidebar.querySelectorAll('.menu-item[href]:not(.dropdown-toggle)');
+      for (let item of menuItems) {
+        const itemPath = item.getAttribute('href');
+        if (itemPath && itemPath === currentPath) {
+          item.classList.add('active');
+          activeFound = true;
+          break;
+        }
+      }
+
+      // Cek submenu di dropdown
+      if (!activeFound) {
+        const dropdownItems = sidebar.querySelectorAll('.dropdown-item.menu-item');
+        for (let item of dropdownItems) {
+          const itemPath = item.getAttribute('href');
+          if (itemPath && itemPath === currentPath) {
+            item.classList.add('active');
+            const parentDropdown = item.closest('.dropdown');
+            if (parentDropdown) {
+              const dropdownToggle = parentDropdown.querySelector('.dropdown-toggle');
+              if (dropdownToggle) {
+                dropdownToggle.classList.add('active');
+              }
+            }
+            activeFound = true;
+            break;
+          }
+        }
+      }
+    } else {
+      console.error('Sidebar not found');
+    }
+
+    // Buka modal logout saat klik link Logout
+    if (logoutLink) {
+      logoutLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+        logoutModal.show();
+      });
+    } else {
+      console.error('Logout link not found');
+    }
+  });
+</script>

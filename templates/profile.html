@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profil Pengguna - Inventra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ff 100%);
+      color: #000000;
+      transition: margin-left 0.3s ease;
+      margin: 0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .main {
+      margin-left: 0;
+      padding: 1rem;
+      transition: margin-left 0.3s ease;
+      padding-top: 120px;
+      box-sizing: border-box;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .main.shift {
+      margin-left: 250px;
+    }
+
+    .profile-container {
+      background: linear-gradient(135deg, #c1c1c1, #d1d1d1);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(26, 58, 107, 0.4);
+      max-width: 600px;
+      margin: 0 auto;
+      border: 3px solid #a1a1a1;
+      position: relative;
+      overflow: hidden;
+      animation: dropIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .profile-container::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: -40%;
+      width: 180%;
+      height: 180%;
+      background: radial-gradient(circle, rgba(46, 90, 158, 0.3), transparent);
+      opacity: 0.5;
+      animation: rotateGlow 20s infinite linear;
+      z-index: 0;
+    }
+
+    @keyframes rotateGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes dropIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-120px);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translateY(15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-photo-container {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-photo {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 5px solid #f1eded;
+      box-shadow: 0 0 25px rgba(46, 90, 158, 0.6);
+      transition: transform 0.5s ease-out, box-shadow 0.5s ease-out;
+    }
+
+    .profile-photo:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 35px rgba(46, 90, 158, 0.9);
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-upload, .btn-delete {
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 1rem;
+      border: none;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 10px rgba(26, 58, 107, 0.3);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-upload {
+      background: linear-gradient(135deg, #28a745, #218838);
+      color: #ffffff;
+    }
+
+    .btn-upload::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .btn-upload:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+    }
+
+    .btn-upload:hover::after {
+      transform: translateX(100%);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: #ffffff;
+    }
+
+    .btn-delete::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .btn-delete:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+    }
+
+    .btn-delete:hover::after {
+      transform: translateX(100%);
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(46, 90, 158, 0.3);
+      font-size: 1.1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-item:last-child {
+      border-bottom: none;
+    }
+
+    .profile-item span:first-child {
+      font-weight: 600;
+      color: #101111;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .profile-item span:last-child {
+      color: #000000;
+      font-weight: 500;
+    }
+
+    .status-badge-admin {
+      background: linear-gradient(135deg, #2e5a9e, #1a3a6b);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 25px;
+      box-shadow: 0 0 15px rgba(46, 90, 158, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-badge-user {
+      background: linear-gradient(135deg, #3a5f8a, #2a4066);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 25px;
+      box-shadow: 0 0 15px rgba(58, 95, 138, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .description {
+      text-align: center;
+      margin: 20px 0;
+      font-style: italic;
+      color: #000000;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+      background: rgba(26, 58, 107, 0.3);
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid #2e5a9e;
+      font-size: 1rem;
+    }
+
+    /* Modal Notifikasi */
+    .modal-header-success {
+      background: linear-gradient(90deg, #1a3a6b, #0f2a55);
+      color: #ffffff;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 0.5rem 1rem;
+    }
+
+    .modal-header-success .btn-close {
+      filter: invert(1);
+    }
+
+    .modal-body-success {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .spinner-icon {
+      font-size: 2rem;
+      color: #1a3a6b;
+      animation: spin 1s linear infinite;
+    }
+
+    .success-icon {
+      font-size: 2rem;
+      color: #1a3a6b;
+      animation: elegantCheck 0.6s ease-in-out forwards;
+    }
+
+    .success-text {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .modal-footer-success {
+      border-top: none;
+      padding: 0.5rem 1rem;
+      justify-content: center;
+    }
+
+    .btn-success-ok {
+      background: linear-gradient(90deg, #1a3a6b, #0f2a55);
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(26, 58, 107, 0.4);
+      display: none;
+    }
+
+    .btn-success-ok:hover {
+      background: linear-gradient(90deg, #15325c, #0d2246);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(26, 58, 107, 0.6);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes elegantCheck {
+      0% {
+        transform: scale(0) rotate(-20deg);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.1) rotate(10deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main.shift {
+        margin-left: 0;
+      }
+
+      .profile-container {
+        padding: 20px;
+      }
+
+      .profile-photo {
+        width: 120px;
+        height: 120px;
+      }
+
+      .btn-container {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .btn-upload, .btn-delete {
+        font-size: 0.8rem;
+        padding: 4px 6px;
+        width: 35px;
+        height: 35px;
+      }
+
+      .profile-item {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+
+      .description {
+        font-size: 0.9rem;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  {% include 'topbar.html' %}
+  {% include 'sidebar.html' %}
+
+  <!-- Modal Konfirmasi Hapus -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="deleteConfirmModalLabel">Konfirmasi Hapus</h3>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Apakah Anda yakin ingin menghapus foto profil ini?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-danger" id="confirmDeletePhoto">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Notifikasi -->
+  <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header modal-header-success">
+          <h5 class="modal-title" id="notificationModalLabel">
+            <i class="fas fa-info"></i> Notifikasi
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-body-success">
+          <div id="notificationIcon" class="spinner-icon">
+            <i class="fas fa-spinner"></i>
+          </div>
+          <div class="success-text" id="notificationText">Menghapus foto...</div>
+        </div>
+        <div class="modal-footer modal-footer-success">
+          <button type="button" class="btn btn-success-ok" id="notificationOkBtn" style="display: none;">
+            <i class="fas fa-check"></i> OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="container-fluid">
+      <div class="profile-container">
+        <div class="profile-photo-container">
+          <img src="{{ foto_profil }}" alt="Foto Profil" class="profile-photo" id="profilePhoto">
+          <div class="btn-container">
+            <form id="uploadForm" style="display: inline;">
+              <input type="file" name="foto_profil" accept="image/*" id="fotoInput" style="display: none;" onchange="handleUpload(event)">
+              <button type="button" class="btn-upload" onclick="document.getElementById('fotoInput').click();"><i class="fas fa-camera"></i></button>
+            </form>
+            <button type="button" class="btn-delete" onclick="showDeleteConfirmModal()"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="profile-item">
+          <span>Username:</span>
+          <span>{{ user_data.username }}</span>
+        </div>
+        <div class="profile-item">
+          <span>Status:</span>
+          <span>
+            {% if user_data.status == 'admin' %}
+              <span class="status-badge-admin">Admin</span>
+            {% else %}
+              <span class="status-badge-user">User</span>
+            {% endif %}
+          </span>
+        </div>
+        {% if user_data.status == 'user' and user_data.created_by %}
+        <div class="profile-item">
+          <span>Dibuat Oleh:</span>
+          <span>{{ user_data.created_by }}</span>
+        </div>
+        {% endif %}
+        <div class="description">
+          {% if user_data.status == 'admin' %}
+            <p>Penguasa Sistem Inventra - Pemilik Kendali Penuh</p>
+          {% else %}
+            <p>Anggota Setia Inventra</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("main");
+      const menu = document.getElementById("menuToggle");
+
+      sidebar.classList.toggle("active");
+      main.classList.toggle("shift");
+      menu.classList.toggle("active");
+    }
+
+    // Debug untuk memastikan tombol bisa diklik
+    document.querySelectorAll('.btn-upload, .btn-delete').forEach(button => {
+      button.addEventListener('click', (e) => {
+        console.log(`${button.classList.contains('btn-upload') ? 'Ganti Foto' : 'Hapus Foto'} diklik!`);
+      });
+    });
+
+    // Handle upload foto
+    function handleUpload(event) {
+      event.preventDefault();
+      const notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
+      const notificationIcon = document.getElementById('notificationIcon');
+      const notificationText = document.getElementById('notificationText');
+      const notificationOkBtn = document.getElementById('notificationOkBtn');
+      const fotoInput = document.getElementById('fotoInput');
+      const uploadForm = document.getElementById('uploadForm');
+
+      if (fotoInput.files && fotoInput.files.length > 0) {
+        notificationModal.show();
+        notificationText.textContent = 'Mengunggah foto...';
+        notificationIcon.classList.add('spinner-icon');
+        notificationIcon.innerHTML = '<i class="fas fa-spinner"></i>';
+
+        const formData = new FormData();
+        formData.append('action', 'upload');
+        formData.append('foto_profil', fotoInput.files[0]);
+
+        fetch('/profile', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.status === 'success') {
+            setTimeout(() => {
+              notificationText.textContent = data.message || 'Foto profil berhasil diunggah!';
+              notificationIcon.classList.remove('spinner-icon');
+              notificationIcon.classList.add('success-icon');
+              notificationIcon.innerHTML = '<i class="fas fa-check"></i>';
+              notificationOkBtn.style.display = 'block';
+              notificationOkBtn.onclick = function() {
+                notificationModal.hide();
+                location.reload(true);
+              };
+            }, 1500);
+          } else {
+            throw new Error(data.message || 'Gagal mengunggah foto.');
+          }
+        })
+        .catch(error => {
+          console.error('Error detail upload:', error.message);
+          setTimeout(() => {
+            notificationText.textContent = `Terjadi kesalahan: ${error.message}`;
+            notificationIcon.classList.remove('spinner-icon');
+            notificationIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            notificationOkBtn.style.display = 'block';
+            notificationOkBtn.onclick = function() {
+              notificationModal.hide();
+            };
+          }, 1500);
+        });
+      }
+    }
+
+    // Fungsi untuk menampilkan modal konfirmasi hapus
+    function showDeleteConfirmModal() {
+      const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+      deleteConfirmModal.show();
+    }
+
+    // Konfirmasi hapus foto dan tampilkan notifikasi
+    document.getElementById('confirmDeletePhoto').addEventListener('click', function () {
+      const notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
+      const notificationIcon = document.getElementById('notificationIcon');
+      const notificationText = document.getElementById('notificationText');
+      const notificationOkBtn = document.getElementById('notificationOkBtn');
+
+      notificationModal.show();
+      notificationText.textContent = 'Menghapus foto...';
+      notificationIcon.classList.add('spinner-icon');
+      notificationIcon.innerHTML = '<i class="fas fa-spinner"></i>';
+
+      const formData = new FormData();
+      formData.append('action', 'delete');
+      fetch('/profile', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Respons server:', data);
+        if (data.status === 'success') {
+          setTimeout(() => {
+            notificationText.textContent = data.message || 'Foto profil berhasil dihapus!';
+            notificationIcon.classList.remove('spinner-icon');
+            notificationIcon.classList.add('success-icon');
+            notificationIcon.innerHTML = '<i class="fas fa-check"></i>';
+            notificationOkBtn.style.display = 'block';
+            notificationOkBtn.onclick = function() {
+              notificationModal.hide();
+              location.reload(true);
+            };
+          }, 1500);
+        } else {
+          throw new Error(data.message || 'Gagal menghapus foto.');
+        }
+      })
+      .catch(error => {
+        console.error('Error detail hapus:', error.message);
+        setTimeout(() => {
+          notificationText.textContent = `Terjadi kesalahan: ${error.message}`;
+          notificationIcon.classList.remove('spinner-icon');
+          notificationIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+          notificationOkBtn.style.display = 'block';
+          notificationOkBtn.onclick = function() {
+            notificationModal.hide();
+          };
+        }, 1500);
+      });
+
+      deleteConfirmModal.hide();
+    });
+
+    // Highlight menu aktif
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        const allMenuItems = sidebar.querySelectorAll('a:not(.dropdown-toggle), .dropdown-toggle, .dropdown-item');
+        allMenuItems.forEach(item => {
+          item.classList.remove('active');
+        });
+
+        const currentPath = window.location.pathname;
+        let activeFound = false;
+
+        const menuItems = sidebar.querySelectorAll('a:not(.dropdown-toggle)');
+        for (let item of menuItems) {
+          const itemPath = item.getAttribute('href');
+          if (itemPath && itemPath === currentPath) {
+            item.classList.add('active');
+            activeFound = true;
+            break;
+          }
+        }
+
+        if (!activeFound) {
+          const dropdownItems = sidebar.querySelectorAll('.dropdown-item');
+          for (let item of dropdownItems) {
+            const itemPath = item.getAttribute('href');
+            if (itemPath && itemPath === currentPath) {
+              item.classList.add('active');
+              const parentDropdown = item.closest('.dropdown');
+              if (parentDropdown) {
+                const dropdownToggle = parentDropdown.querySelector('.dropdown-toggle');
+                if (dropdownToggle) {
+                  dropdownToggle.classList.add('active');
+                }
+              }
+              activeFound = true;
+              break;
+            }
+          }
+        }
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

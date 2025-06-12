@@ -1,0 +1,117 @@
+<div class="topbar" id="topbar">
+  <div class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="welcome-message">{{ welcome_message }}</div>
+  <a href="{{ url_for('profile') }}" class="profile-link">
+    <img src="{{ foto_profil }}" alt="Foto Profil" onerror="this.src='/static/img/logoinventra.png';">
+    <span>{{ session.user.username if session.user is defined and session.user.username is defined else 'Profil' }}</span>
+  </a>
+</div>
+<style>
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: #1a3a6b;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    border-bottom: 2px solid #2e5a9e;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  .welcome-message {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .menu-toggle {
+    width: 30px;
+    height: 22px;
+    position: relative;
+    cursor: pointer;
+    z-index: 1200;
+  }
+
+  .menu-toggle span {
+    position: absolute;
+    height: 4px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 4px;
+    transition: 0.4s ease;
+  }
+
+  .menu-toggle span:nth-child(1) { top: 0; }
+  .menu-toggle span:nth-child(2) { top: 9px; }
+  .menu-toggle span:nth-child(3) { top: 18px; }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 9px;
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: 9px;
+  }
+
+  .profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+
+  .profile-link:hover {
+    transform: scale(1.05);
+  }
+
+  .profile-link img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    margin-right: 8px;
+    object-fit: cover;
+  }
+
+  .profile-link span {
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .welcome-message {
+      font-size: 1.2rem;
+      padding: 8px 15px;
+    }
+  }
+</style>
